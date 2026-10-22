@@ -80,10 +80,3 @@ SnipelITAppUIAutomation.Tests\Data\testdata.json
 ```
 
 The configured Snipe-IT instance must contain the referenced model and status, such as `MacBook Pro 13\"` and `Ready to Deploy`.
-
-## Project test command
-
-To run the test suite from the repository root, use:
-
-```powershell
-dotnet test .\SnipeITApp.csproj --settings .\local.runsettings
