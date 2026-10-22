@@ -13,9 +13,10 @@ UI automation tests for Snipe-IT using .NET 10, NUnit, and Microsoft Playwright.
 Run the following steps from the repository root:
 
 ```powershell
-cd C:\personal\AutomationTests
-dotnet restore .\SnipeITApp.csproj
-dotnet build .\SnipeITApp.csproj
+git clone https://github.com/chi-77/SnipeITAutomationTests.git
+cd SnipeITAutomationTests
+dotnet restore
+dotnet build
 ```
 
 Install the Playwright browser binaries after the project has been built:
