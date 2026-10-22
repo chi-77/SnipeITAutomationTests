@@ -1,9 +1,4 @@
 ﻿using Microsoft.Playwright;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
 {
@@ -21,8 +16,6 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
         public async Task<string> GetAssetTagAsync()
         {
             var assetTagInput = Page.Locator("#asset_tag");
-            await assetTagInput.WaitForAsync();
-
             var assetTag = await assetTagInput.InputValueAsync();
             if (string.IsNullOrWhiteSpace(assetTag))
             {
@@ -59,9 +52,6 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
 
         public async Task<string> SelectRandomAssignedUserAsync()
         {
-            await Page.Locator("#assignto_selector").WaitForAsync(
-                new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
-
             await Page.Locator("#select2-assigned_user_select-container").ClickAsync();
 
             var options = Page.Locator(
@@ -86,6 +76,27 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
         public async Task SaveAsync()
         {
             await Page.Locator("#submit_button").ClickAsync();
+
+            var errorMessages = new List<string>();
+            var errorAlert = Page.Locator("div.alert.alert-danger[role='alert']")
+                .Filter(new() { HasTextString = "Please check the form below for errors" });
+
+            if (await errorAlert.IsVisibleAsync())
+            {
+                errorMessages.Add((await errorAlert.InnerTextAsync()).Trim());
+            }
+
+            var requiredFieldAlerts = Page.Locator(".alert-msg[role='alert']:visible");
+            if (await requiredFieldAlerts.CountAsync() > 0)
+            {
+                errorMessages.AddRange(await requiredFieldAlerts.AllTextContentsAsync());
+            }
+
+            if (errorMessages.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    $"Asset creation failed after saving: {string.Join("; ", errorMessages)}");
+            }
         }
     }
 }

@@ -35,10 +35,7 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Workflows
             var assetsListPage = new AssetsListPage(_page, _settings.BaseUrl);
             await assetsListPage.NavigateAsync();
             await assetsListPage.SearchByAssetTagAsync(assetTag);
-
-            var assetRow = assetsListPage.GetAssetRow(assetTag);
-            await assetRow.WaitForAsync();
-            await assetsListPage.OpenAssetAsync(assetRow, assetTag);
+            await assetsListPage.OpenAssetAsync(assetTag);
 
             return new AssetDetailsPage(_page);
         }

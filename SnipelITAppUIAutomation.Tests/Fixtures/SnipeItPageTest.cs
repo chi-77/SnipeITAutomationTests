@@ -8,12 +8,10 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Fixtures
         protected TestSettings Settings { get; } = TestSettings.Load();
 
         [SetUp]
-        public Task SetUpSnipeItAsync()
+        public void SetUpSnipeIt()
         {
             Page.SetDefaultTimeout((float)Settings.Timeout.TotalMilliseconds);
             Page.SetDefaultNavigationTimeout((float)Settings.Timeout.TotalMilliseconds);
-
-            return Task.CompletedTask;
         }
 
         protected async Task SignInAsync(string username, string password)

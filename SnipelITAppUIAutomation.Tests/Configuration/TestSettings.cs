@@ -4,16 +4,14 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Configuration
 {
     public sealed class TestSettings
     {
-        private const string DefaultBaseUrl = "https://demo.snipeitapp.com";
         private const int DefaultTimeoutSeconds = 30;
 
-        private TestSettings(Uri baseUrl, string username, string password, TimeSpan timeout, bool headless)
+        private TestSettings(Uri baseUrl, string username, string password, TimeSpan timeout)
         {
             BaseUrl = baseUrl;
             Username = username;
             Password = password;
             Timeout = timeout;
-            Headless = headless;
         }
 
         public Uri BaseUrl { get; }
@@ -24,18 +22,19 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Configuration
 
         public TimeSpan Timeout { get; }
 
-        public bool Headless { get; }
-
         public static TestSettings Load()
         {
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: true)
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddUserSecrets<TestSettings>(optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
-            var baseUrl = ParseBaseUrl(configuration["SNIPEIT_BASE_URL"] ?? DefaultBaseUrl);
-            var username = configuration["SNIPEIT_USERNAME"] ?? GetRequiredEnvironmentVariable("SNIPEIT_USERNAME");
-            var password = configuration["SNIPEIT_PASSWORD"] ?? GetRequiredEnvironmentVariable("SNIPEIT_PASSWORD");
+            var baseUrl = ParseBaseUrl(
+                GetRequiredSetting(configuration, "SNIPEIT_BASE_URL"));
+            var username = GetRequiredSetting(configuration, "SNIPEIT_USERNAME");
+            var password = GetRequiredSetting(configuration, "SNIPEIT_PASSWORD");
             var timeoutValue = configuration["SNIPEIT_TIMEOUT_SECONDS"];
             var timeoutSeconds = DefaultTimeoutSeconds;
             if (!string.IsNullOrWhiteSpace(timeoutValue) &&
@@ -45,15 +44,7 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Configuration
                     "SNIPEIT_TIMEOUT_SECONDS must be a positive whole number.");
             }
 
-            var headlessValue = configuration["SNIPEIT_HEADLESS"];
-            var headless = false;
-            if (!string.IsNullOrWhiteSpace(headlessValue) &&
-                !bool.TryParse(headlessValue, out headless))
-            {
-                throw new InvalidOperationException("SNIPEIT_HEADLESS must be 'true' or 'false'.");
-            }
-
-            return new TestSettings(baseUrl, username, password, TimeSpan.FromSeconds(timeoutSeconds), headless);
+            return new TestSettings(baseUrl, username, password, TimeSpan.FromSeconds(timeoutSeconds));
         }
 
         private static Uri ParseBaseUrl(string value)
@@ -68,13 +59,12 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Configuration
             return baseUrl;
         }
 
-        private static string GetRequiredEnvironmentVariable(string name)
+        private static string GetRequiredSetting(IConfiguration configuration, string name)
         {
-            var value = Environment.GetEnvironmentVariable(name);
+            var value = configuration[name];
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new InvalidOperationException(
-                    $"Required environment variable {name} is missing or empty.");
+                throw new InvalidOperationException($"Required setting {name} is missing or empty.");
             }
 
             return value;

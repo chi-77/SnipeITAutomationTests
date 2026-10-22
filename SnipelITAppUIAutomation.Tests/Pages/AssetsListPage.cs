@@ -1,7 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
 {
@@ -28,8 +25,9 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
             return Page.GetByRole(AriaRole.Row).Filter(new() { HasText = assetTag });
         }
 
-        public async Task OpenAssetAsync(ILocator assetRow, string assetTag)
+        public async Task OpenAssetAsync(string assetTag)
         {
+            var assetRow = GetAssetRow(assetTag);
             await assetRow.GetByRole(AriaRole.Link, new() { Name = assetTag, Exact = true }).ClickAsync();
         }
     }

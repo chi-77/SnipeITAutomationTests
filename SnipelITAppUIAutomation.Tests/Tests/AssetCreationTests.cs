@@ -45,28 +45,24 @@ namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Tests
             AssetCreationData assetData)
         {
             var assetTagOnPage = assetDetailsPage.TextLocator(assetTag, exact: true);
-            await assetTagOnPage.WaitForAsync();
             await Expect(assetTagOnPage).ToHaveCountAsync(1);
 
             var assignedUserOnPage = assetDetailsPage.TextLocator(
                 assignedUser,
                 Page.Locator($"a[title='{assignedUser}']"),
                 exact: true);
-            await assignedUserOnPage.WaitForAsync();
             await Expect(assignedUserOnPage).ToHaveCountAsync(1);
 
             var readyToDeployStatus = assetDetailsPage.TextLocator(
                 assetData.StatusName,
                 Page.Locator("div.well"),
                 exact: false);
-            await readyToDeployStatus.WaitForAsync();
             await Expect(readyToDeployStatus).ToHaveCountAsync(1);
 
             var modelOnPage = assetDetailsPage.TextLocator(
                 assetData.ModelName,
                 Page.Locator("li#model"),
                 exact: false);
-            await modelOnPage.WaitForAsync();
             await Expect(modelOnPage).ToHaveCountAsync(1);
         }
 

@@ -1,7 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SnipeITApp.SnipelITAppUIAutomation.Tests.Pages
 {
