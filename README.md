@@ -25,6 +25,12 @@ Install the Playwright browser binaries after the project has been built:
 .\bin\Debug\net10.0\playwright.ps1 install
 ```
 
+## Run the tests
+
+```powershell
+dotnet test
+```
+
 ## Configure local test settings
 
 The repository uses two local files when running tests in headed mode:
@@ -71,6 +77,20 @@ The `local.runsettings` file configures Playwright to run with a visible browser
 6. Run `CreateAsset_CheckOutToRandomUser_AndVerifyHistory`, or run all discovered tests.
 
 The selected `local.runsettings` file sets `HEADED=1`, so the browser should be visible during execution.
+
+## Test output
+
+After the asset is created, the test writes two values to the test output:
+
+- The generated asset tag.
+- The user assigned to the asset during creation.
+
+The output is written with the following labels:
+
+```text
+Test asset tag: <asset-tag>
+Assigned user during asset creation: <assigned-user>
+```
 
 ## Test data
 
